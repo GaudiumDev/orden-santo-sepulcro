@@ -1,5 +1,11 @@
 import { useState, useEffect } from "react"
 import { Button } from "@/components/ui/button"
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog"
 import { Camera, Plus, Database } from "lucide-react"
 import { supabase } from "@/integrations/supabase/client"
 
@@ -15,6 +21,7 @@ interface GalleryImage {
 const Galeria = () => {
   const [images, setImages] = useState<GalleryImage[]>([])
   const [loading, setLoading] = useState(true)
+  const [selectedImage, setSelectedImage] = useState<GalleryImage | null>(null)
 
   useEffect(() => {
     fetchImages()
@@ -53,7 +60,7 @@ const Galeria = () => {
           </div>
 
           {/* Backend Integration Notice */}
-          {/* <div className="bg-muted rounded-2xl p-8 mb-12 text-center">
+          <div className="bg-muted rounded-2xl p-8 mb-12 text-center">
             <div className="flex items-center justify-center mb-4">
               <Database className="h-8 w-8 text-primary mr-3" />
               <h3 className="font-serif text-2xl font-semibold text-primary">
@@ -61,8 +68,9 @@ const Galeria = () => {
               </h3>
             </div>
             <p className="text-foreground text-lg mb-6 max-w-2xl mx-auto">
-              Para implementar una galería completamente funcional donde se puedan subir y gestionar 
-              imágenes de eventos, necesitamos conectar el sitio con Supabase, nuestro backend integrado.
+              Para implementar una galería completamente funcional donde se
+              puedan subir y gestionar imágenes de eventos, necesitamos conectar
+              el sitio con Supabase, nuestro backend integrado.
             </p>
             <div className="space-y-4 text-left max-w-2xl mx-auto">
               <div className="flex items-center space-x-3">
@@ -78,7 +86,7 @@ const Galeria = () => {
                 <span>Gestión administrativa de contenido</span>
               </div>
             </div>
-          </div> */}
+          </div>
 
           {/* Gallery Grid */}
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6 mb-12">
@@ -103,7 +111,8 @@ const Galeria = () => {
               images.map((image) => (
                 <div
                   key={image.id}
-                  className="bg-card rounded-2xl overflow-hidden shadow-card-custom hover:shadow-elegant transition-all duration-300"
+                  onClick={() => setSelectedImage(image)}
+                  className="bg-card rounded-2xl overflow-hidden shadow-card-custom hover:shadow-elegant transition-all duration-300 cursor-pointer"
                 >
                   <div className="h-48 relative overflow-hidden">
                     <img
@@ -147,10 +156,10 @@ const Galeria = () => {
                 ¿Listo para activar la galería?
               </h3>
               <p className="text-primary-foreground/90 mb-6 max-w-2xl mx-auto">
-                Conecta tu proyecto con Supabase para habilitar la funcionalidad
-                completa de gestión de imágenes y contenido dinámico.
+                Conecta tu proyecto con Supabase para habilitar la funcionalidad completa 
+                de gestión de imágenes y contenido dinámico.
               </p>
-              <Button
+              <Button 
                 variant="secondary"
                 className="bg-card text-foreground hover:bg-card/90 px-8 py-3 shadow-gold"
               >
@@ -161,6 +170,34 @@ const Galeria = () => {
           </div> */}
         </div>
       </div>
+
+      {/* Image Detail Dialog */}
+      <Dialog
+        open={!!selectedImage}
+        onOpenChange={(open) => !open && setSelectedImage(null)}
+      >
+        <DialogContent className="max-w-4xl">
+          <DialogHeader>
+            <DialogTitle className="font-serif text-2xl text-primary">
+              {selectedImage?.title}
+            </DialogTitle>
+          </DialogHeader>
+          <div className="space-y-4">
+            <div className="relative w-full aspect-video rounded-lg overflow-hidden">
+              <img
+                src={selectedImage?.image_url}
+                alt={selectedImage?.title}
+                className="w-full h-full object-contain"
+              />
+            </div>
+            {selectedImage?.description && (
+              <p className="text-foreground text-lg">
+                {selectedImage.description}
+              </p>
+            )}
+          </div>
+        </DialogContent>
+      </Dialog>
     </section>
   )
 }
