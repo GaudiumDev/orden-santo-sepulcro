@@ -60,7 +60,7 @@ const Galeria = () => {
           </div>
 
           {/* Backend Integration Notice */}
-          <div className="bg-muted rounded-2xl p-8 mb-12 text-center">
+          {/* <div className="bg-muted rounded-2xl p-8 mb-12 text-center">
             <div className="flex items-center justify-center mb-4">
               <Database className="h-8 w-8 text-primary mr-3" />
               <h3 className="font-serif text-2xl font-semibold text-primary">
@@ -86,7 +86,7 @@ const Galeria = () => {
                 <span>Gestión administrativa de contenido</span>
               </div>
             </div>
-          </div>
+          </div> */}
 
           {/* Gallery Grid */}
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6 mb-12">
