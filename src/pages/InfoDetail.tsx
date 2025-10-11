@@ -1,56 +1,56 @@
-import { useState, useEffect } from 'react';
-import { useParams, useNavigate } from 'react-router-dom';
-import { Button } from '@/components/ui/button';
-import { supabase } from '@/integrations/supabase/client';
-import { ArrowLeft, FileText } from 'lucide-react';
-import Header from '@/components/Header';
-import Footer from '@/components/Footer';
+import { useState, useEffect } from "react"
+import { useParams, useNavigate } from "react-router-dom"
+import { Button } from "@/components/ui/button"
+import { supabase } from "@/integrations/supabase/client"
+import { ArrowLeft, FileText } from "lucide-react"
+import Header from "@/components/Header"
+import Footer from "@/components/Footer"
 
 interface InfoSection {
-  id: string;
-  title: string;
-  description: string | null;
-  content: string | null;
-  category: string;
-  image_url: string | null;
-  is_active: boolean;
-  created_at: string;
+  id: string
+  title: string
+  description: string | null
+  content: string | null
+  category: string
+  image_url: string | null
+  is_active: boolean
+  created_at: string
 }
 
 const InfoDetail = () => {
-  const { category, id } = useParams();
-  const navigate = useNavigate();
-  const [section, setSection] = useState<InfoSection | null>(null);
-  const [loading, setLoading] = useState(true);
-  const [notFound, setNotFound] = useState(false);
+  const { category, id } = useParams()
+  const navigate = useNavigate()
+  const [section, setSection] = useState<InfoSection | null>(null)
+  const [loading, setLoading] = useState(true)
+  const [notFound, setNotFound] = useState(false)
 
   useEffect(() => {
     if (id) {
-      fetchSection();
+      fetchSection()
     }
-  }, [id]);
+  }, [id])
 
   const fetchSection = async () => {
     try {
       const { data, error } = await supabase
-        .from('info_sections')
-        .select('*')
-        .eq('id', id)
-        .eq('is_active', true)
-        .single();
+        .from("info_sections")
+        .select("*")
+        .eq("id", id)
+        .eq("is_active", true)
+        .single()
 
       if (error || !data) {
-        setNotFound(true);
+        setNotFound(true)
       } else {
-        setSection(data);
+        setSection(data)
       }
     } catch (error) {
-      console.error('Error fetching section:', error);
-      setNotFound(true);
+      console.error("Error fetching section:", error)
+      setNotFound(true)
     } finally {
-      setLoading(false);
+      setLoading(false)
     }
-  };
+  }
 
   if (loading) {
     return (
@@ -72,7 +72,7 @@ const InfoDetail = () => {
         </main>
         <Footer />
       </div>
-    );
+    )
   }
 
   if (notFound || !section) {
@@ -88,7 +88,7 @@ const InfoDetail = () => {
             <p className="text-muted-foreground mb-8">
               La información que buscas no existe o no está disponible.
             </p>
-            <Button onClick={() => navigate('/')}>
+            <Button onClick={() => navigate("/")}>
               <ArrowLeft className="h-4 w-4 mr-2" />
               Volver al Inicio
             </Button>
@@ -96,23 +96,23 @@ const InfoDetail = () => {
         </main>
         <Footer />
       </div>
-    );
+    )
   }
 
   return (
     <div className="min-h-screen bg-background">
       <Header />
-      
-      <main className="container mx-auto px-6 py-12">
+
+      <main className="container mx-auto px-6 py-20">
         <div className="max-w-4xl mx-auto">
           {/* Navigation */}
           <div className="mb-8">
-            <Button 
-              variant="ghost" 
-              onClick={() => navigate('/')}
+            <Button
+              variant="ghost"
+              onClick={() => navigate("/")}
               className="text-muted-foreground hover:text-foreground"
             >
-              <ArrowLeft className="h-4 w-4 mr-2" />
+              <ArrowLeft className="h-4 w-4  mr-2" />
               Volver al sitio
             </Button>
           </div>
@@ -123,7 +123,7 @@ const InfoDetail = () => {
               {section.title}
             </h1>
             <div className="w-24 h-1 bg-gradient-gold mb-8"></div>
-            
+
             {section.description && (
               <p className="text-xl text-muted-foreground leading-relaxed">
                 {section.description}
@@ -162,19 +162,19 @@ const InfoDetail = () => {
 
           {/* Back to Top */}
           <div className="mt-16 text-center">
-            <Button 
-              variant="outline"
-              onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
+            <a
+              href="/"
+              className="inline-block px-4 py-2 border border-transparent rounded-md text-sm font-medium text-white bg-primary hover:bg-primary/80"
             >
               Volver al Inicio
-            </Button>
+            </a>
           </div>
         </div>
       </main>
 
       <Footer />
     </div>
-  );
-};
+  )
+}
 
-export default InfoDetail;
+export default InfoDetail
