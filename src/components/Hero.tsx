@@ -33,12 +33,12 @@ const Hero = () => {
           <h1 className="font-serif text-5xl md:text-7xl font-bold text-foreground mb-4 leading-tight">
             Orden De Caballeria del
             <span className="block text-primary">Santo Sepulcro</span>
-            <span className="block text-2xl md:text-3xl font-normal text-muted-foreground mt-2">
+            <span className="block text-2xl md:text-3xl font-normal mt-2">
               de Jerusalén
             </span>
           </h1>
           <div className="w-24 h-1 bg-gradient-gold mx-auto mb-6"></div>
-          <p className="text-xl md:text-2xl text-muted-foreground font-light italic">
+          <p className="text-xl md:text-2xl  font-light italic">
             Lugartenencia Argentina - 1888
           </p>
         </div>
