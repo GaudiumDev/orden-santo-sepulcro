@@ -18,7 +18,7 @@ interface InfoSection {
   description: string | null;
   content: string | null;
   category: string;
-  image_url: string | null;
+  image_urls: string[];
   is_active: boolean;
   created_at: string;
 }
@@ -34,7 +34,7 @@ const InfoSectionsManager = () => {
     description: '',
     content: '',
     category: 'gran_magisterio',
-    image_url: '',
+    image_urls: ['', '', '', '', ''],
     is_active: true
   });
   const { toast } = useToast();
@@ -82,6 +82,9 @@ const InfoSectionsManager = () => {
     try {
       if (editingSection) {
         // Update existing section
+        // Filter out empty strings from image_urls
+        const filteredImageUrls = formData.image_urls.filter(url => url.trim() !== '');
+
         const { error } = await supabase
           .from('info_sections')
           .update({
@@ -89,7 +92,7 @@ const InfoSectionsManager = () => {
             description: formData.description || null,
             content: formData.content || null,
             category: formData.category,
-            image_url: formData.image_url || null,
+            image_urls: filteredImageUrls,
             is_active: formData.is_active
           })
           .eq('id', editingSection.id);
@@ -102,6 +105,9 @@ const InfoSectionsManager = () => {
         });
       } else {
         // Create new section
+        // Filter out empty strings from image_urls
+        const filteredImageUrls = formData.image_urls.filter(url => url.trim() !== '');
+
         const { error } = await supabase
           .from('info_sections')
           .insert({
@@ -109,7 +115,7 @@ const InfoSectionsManager = () => {
             description: formData.description || null,
             content: formData.content || null,
             category: formData.category,
-            image_url: formData.image_url || null,
+            image_urls: filteredImageUrls,
             is_active: formData.is_active
           });
 
@@ -193,7 +199,7 @@ const InfoSectionsManager = () => {
       description: '',
       content: '',
       category: 'gran_magisterio',
-      image_url: '',
+      image_urls: ['', '', '', '', ''],
       is_active: true
     });
     setEditingSection(null);
@@ -201,12 +207,14 @@ const InfoSectionsManager = () => {
 
   const openEditDialog = (section: InfoSection) => {
     setEditingSection(section);
+    // Ensure we always have exactly 5 slots for images
+    const imageUrlsArray = [...(section.image_urls || []), '', '', '', '', ''].slice(0, 5);
     setFormData({
       title: section.title,
       description: section.description || '',
       content: section.content || '',
       category: section.category,
-      image_url: section.image_url || '',
+      image_urls: imageUrlsArray,
       is_active: section.is_active
     });
     setShowDialog(true);
@@ -297,14 +305,26 @@ const InfoSectionsManager = () => {
                 />
               </div>
 
-              <div className="space-y-2">
-                <Label htmlFor="image_url">URL de Imagen (opcional)</Label>
-                <Input
-                  id="image_url"
-                  value={formData.image_url}
-                  onChange={(e) => setFormData({ ...formData, image_url: e.target.value })}
-                  placeholder="https://ejemplo.com/imagen.jpg"
-                />
+              <div className="space-y-3">
+                <Label className="text-base font-semibold">URLs de Imágenes (hasta 5)</Label>
+                <p className="text-sm text-muted-foreground">Puedes agregar hasta 5 imágenes para este evento</p>
+                {formData.image_urls.map((url, index) => (
+                  <div key={index} className="space-y-2">
+                    <Label htmlFor={`image_url_${index}`}>
+                      Imagen {index + 1} {index === 0 ? '(Principal)' : '(opcional)'}
+                    </Label>
+                    <Input
+                      id={`image_url_${index}`}
+                      value={url}
+                      onChange={(e) => {
+                        const newUrls = [...formData.image_urls];
+                        newUrls[index] = e.target.value;
+                        setFormData({ ...formData, image_urls: newUrls });
+                      }}
+                      placeholder="https://ejemplo.com/imagen.jpg"
+                    />
+                  </div>
+                ))}
               </div>
 
               <div className="flex items-center space-x-2">

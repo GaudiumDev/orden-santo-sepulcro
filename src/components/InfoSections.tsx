@@ -11,7 +11,7 @@ interface InfoSection {
   description: string | null;
   content: string | null;
   category: string;
-  image_url: string | null;
+  image_urls: string[];
   is_active: boolean;
   created_at: string;
 }
@@ -127,9 +127,9 @@ const InfoSections = () => {
               <Card key={section.id} className="overflow-hidden shadow-card-custom hover:shadow-elegant transition-all duration-300 group">
                 {/* Image */}
                 <div className="h-48 relative overflow-hidden">
-                  {section.image_url ? (
+                  {section.image_urls && section.image_urls.length > 0 && section.image_urls[0] ? (
                     <img
-                      src={section.image_url}
+                      src={section.image_urls[0]}
                       alt={section.title}
                       className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
                     />

@@ -12,7 +12,7 @@ interface InfoSection {
   description: string | null
   content: string | null
   category: string
-  image_url: string | null
+  image_urls: string[]
   is_active: boolean
   created_at: string
 }
@@ -131,16 +131,43 @@ const InfoDetail = () => {
             )}
           </div>
 
-          {/* Featured Image */}
-          {section.image_url && (
+          {/* Image Gallery */}
+          {section.image_urls && section.image_urls.length > 0 && (
             <div className="mb-12">
-              <div className="rounded-2xl overflow-hidden shadow-elegant">
-                <img
-                  src={section.image_url}
-                  alt={section.title}
-                  className="w-full h-auto max-h-96 object-cover"
-                />
-              </div>
+              {section.image_urls.length === 1 ? (
+                // Single image
+                <div className="rounded-2xl overflow-hidden shadow-elegant">
+                  <img
+                    src={section.image_urls[0]}
+                    alt={section.title}
+                    className="w-full h-auto max-h-96 object-cover"
+                  />
+                </div>
+              ) : (
+                // Multiple images grid
+                <div className="space-y-4">
+                  <div className="rounded-2xl overflow-hidden shadow-elegant">
+                    <img
+                      src={section.image_urls[0]}
+                      alt={`${section.title} - Principal`}
+                      className="w-full h-auto max-h-96 object-cover"
+                    />
+                  </div>
+                  {section.image_urls.length > 1 && (
+                    <div className={`grid ${section.image_urls.length === 2 ? 'grid-cols-1' : section.image_urls.length === 3 ? 'grid-cols-2' : 'grid-cols-2 md:grid-cols-4'} gap-4`}>
+                      {section.image_urls.slice(1).map((imageUrl, index) => (
+                        <div key={index} className="rounded-lg overflow-hidden shadow-card-custom hover:shadow-elegant transition-all duration-300">
+                          <img
+                            src={imageUrl}
+                            alt={`${section.title} - ${index + 2}`}
+                            className="w-full h-48 object-cover hover:scale-105 transition-transform duration-300"
+                          />
+                        </div>
+                      ))}
+                    </div>
+                  )}
+                </div>
+              )}
             </div>
           )}
 
