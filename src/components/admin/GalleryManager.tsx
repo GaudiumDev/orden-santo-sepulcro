@@ -9,13 +9,13 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from 
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
-import { Plus, Upload, Edit, Trash2, Image } from 'lucide-react';
+import { Plus, Upload, Edit, Trash2, Image, Images } from 'lucide-react';
 
 interface GalleryImage {
   id: string;
   title: string;
   description: string | null;
-  image_url: string;
+  image_urls: string[];
   category: string | null;
   created_at: string;
 }
@@ -31,7 +31,7 @@ const GalleryManager = () => {
     description: '',
     category: 'general'
   });
-  const [selectedFile, setSelectedFile] = useState<File | null>(null);
+  const [selectedFiles, setSelectedFiles] = useState<File[]>([]);
   const { toast } = useToast();
 
   const categories = [
@@ -90,34 +90,42 @@ const GalleryManager = () => {
     setUploading(true);
 
     try {
-      let imageUrl = editingImage?.image_url || '';
+      let imageUrls = editingImage?.image_urls || [];
 
-      if (selectedFile) {
-        imageUrl = await uploadImage(selectedFile);
+      // Upload new files if any
+      if (selectedFiles.length > 0) {
+        const uploadPromises = selectedFiles.map(file => uploadImage(file));
+        const newUrls = await Promise.all(uploadPromises);
+        imageUrls = [...imageUrls, ...newUrls];
+
+        // Ensure we don't exceed 5 images
+        if (imageUrls.length > 5) {
+          imageUrls = imageUrls.slice(0, 5);
+        }
       }
 
       if (editingImage) {
-        // Update existing image
+        // Update existing gallery entry
         const { error } = await supabase
           .from('gallery_images')
           .update({
             title: formData.title,
             description: formData.description || null,
             category: formData.category,
-            image_url: imageUrl
+            image_urls: imageUrls
           })
           .eq('id', editingImage.id);
 
         if (error) throw error;
 
         toast({
-          title: "Imagen actualizada",
-          description: "La imagen se ha actualizado correctamente",
+          title: "Entrada actualizada",
+          description: "La entrada se ha actualizado correctamente",
         });
       } else {
-        // Create new image
-        if (!selectedFile) {
-          throw new Error('Debes seleccionar una imagen');
+        // Create new gallery entry
+        if (selectedFiles.length === 0) {
+          throw new Error('Debes seleccionar al menos una imagen');
         }
 
         const { error } = await supabase
@@ -126,14 +134,14 @@ const GalleryManager = () => {
             title: formData.title,
             description: formData.description || null,
             category: formData.category,
-            image_url: imageUrl
+            image_urls: imageUrls
           });
 
         if (error) throw error;
 
         toast({
-          title: "Imagen agregada",
-          description: "La imagen se ha agregado correctamente",
+          title: "Entrada agregada",
+          description: "La entrada se ha agregado correctamente",
         });
       }
 
@@ -143,7 +151,7 @@ const GalleryManager = () => {
     } catch (error: any) {
       toast({
         title: "Error",
-        description: error.message || "Error al procesar la imagen",
+        description: error.message || "Error al procesar las imágenes",
         variant: "destructive",
       });
     } finally {
@@ -181,7 +189,7 @@ const GalleryManager = () => {
 
   const resetForm = () => {
     setFormData({ title: '', description: '', category: 'general' });
-    setSelectedFile(null);
+    setSelectedFiles([]);
     setEditingImage(null);
   };
 
@@ -268,16 +276,77 @@ const GalleryManager = () => {
               </div>
 
               <div className="space-y-2">
-                <Label htmlFor="image">
-                  {editingImage ? 'Nueva Imagen (opcional)' : 'Imagen'}
+                <Label htmlFor="images">
+                  {editingImage ? 'Agregar Más Imágenes (opcional)' : 'Imágenes (máximo 5)'}
                 </Label>
                 <Input
-                  id="image"
+                  id="images"
                   type="file"
                   accept="image/*"
-                  onChange={(e) => setSelectedFile(e.target.files?.[0] || null)}
+                  multiple
+                  onChange={(e) => {
+                    const files = Array.from(e.target.files || []);
+                    const currentCount = editingImage?.image_urls.length || 0;
+                    const maxNewFiles = 5 - currentCount;
+
+                    if (files.length > maxNewFiles) {
+                      toast({
+                        title: "Límite alcanzado",
+                        description: `Solo puedes agregar ${maxNewFiles} imagen(es) más`,
+                        variant: "destructive",
+                      });
+                      setSelectedFiles(files.slice(0, maxNewFiles));
+                    } else {
+                      setSelectedFiles(files);
+                    }
+                  }}
                   required={!editingImage}
                 />
+                <p className="text-xs text-muted-foreground">
+                  {editingImage
+                    ? `Tienes ${editingImage.image_urls.length} imagen(es). Puedes agregar hasta ${5 - editingImage.image_urls.length} más.`
+                    : 'Selecciona hasta 5 imágenes para esta entrada de galería'
+                  }
+                </p>
+
+                {/* File previews */}
+                {selectedFiles.length > 0 && (
+                  <div className="grid grid-cols-3 gap-2 mt-3">
+                    {selectedFiles.map((file, index) => (
+                      <div key={index} className="relative aspect-square rounded-lg overflow-hidden border border-border">
+                        <img
+                          src={URL.createObjectURL(file)}
+                          alt={`Preview ${index + 1}`}
+                          className="w-full h-full object-cover"
+                        />
+                        <div className="absolute top-1 right-1 bg-black/70 text-white text-xs px-1 rounded">
+                          {index + 1}
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                )}
+
+                {/* Existing images preview when editing */}
+                {editingImage && editingImage.image_urls.length > 0 && (
+                  <div className="mt-3">
+                    <Label className="text-sm">Imágenes actuales:</Label>
+                    <div className="grid grid-cols-3 gap-2 mt-2">
+                      {editingImage.image_urls.map((url, index) => (
+                        <div key={index} className="relative aspect-square rounded-lg overflow-hidden border border-primary">
+                          <img
+                            src={url}
+                            alt={`Actual ${index + 1}`}
+                            className="w-full h-full object-cover"
+                          />
+                          <div className="absolute top-1 left-1 bg-primary text-primary-foreground text-xs px-1 rounded">
+                            {index + 1}
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
               </div>
 
               <div className="flex space-x-2 pt-4">
@@ -322,10 +391,17 @@ const GalleryManager = () => {
             <Card key={image.id} className="overflow-hidden">
               <div className="aspect-video relative">
                 <img
-                  src={image.image_url}
+                  src={image.image_urls && image.image_urls.length > 0 ? image.image_urls[0] : ''}
                   alt={image.title}
                   className="w-full h-full object-cover"
                 />
+                {/* Indicator for multiple images */}
+                {image.image_urls && image.image_urls.length > 1 && (
+                  <div className="absolute top-3 right-3 bg-black/70 text-white px-2 py-1 rounded-full flex items-center gap-1 text-xs">
+                    <Images className="h-3 w-3" />
+                    <span>{image.image_urls.length}</span>
+                  </div>
+                )}
               </div>
               <CardContent className="p-4">
                 <h3 className="font-semibold text-primary mb-2">{image.title}</h3>

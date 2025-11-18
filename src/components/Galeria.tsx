@@ -6,14 +6,14 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog"
-import { Camera, Plus, Database } from "lucide-react"
+import { Camera, Plus, Database, ChevronLeft, ChevronRight, Images } from "lucide-react"
 import { supabase } from "@/integrations/supabase/client"
 
 interface GalleryImage {
   id: string
   title: string
   description: string | null
-  image_url: string
+  image_urls: string[]
   category: string | null
   created_at: string
 }
@@ -22,6 +22,7 @@ const Galeria = () => {
   const [images, setImages] = useState<GalleryImage[]>([])
   const [loading, setLoading] = useState(true)
   const [selectedImage, setSelectedImage] = useState<GalleryImage | null>(null)
+  const [currentImageIndex, setCurrentImageIndex] = useState(0)
 
   useEffect(() => {
     fetchImages()
@@ -59,35 +60,6 @@ const Galeria = () => {
             </p>
           </div>
 
-          {/* Backend Integration Notice */}
-          {/* <div className="bg-muted rounded-2xl p-8 mb-12 text-center">
-            <div className="flex items-center justify-center mb-4">
-              <Database className="h-8 w-8 text-primary mr-3" />
-              <h3 className="font-serif text-2xl font-semibold text-primary">
-                Galería Dinámica
-              </h3>
-            </div>
-            <p className="text-foreground text-lg mb-6 max-w-2xl mx-auto">
-              Para implementar una galería completamente funcional donde se
-              puedan subir y gestionar imágenes de eventos, necesitamos conectar
-              el sitio con Supabase, nuestro backend integrado.
-            </p>
-            <div className="space-y-4 text-left max-w-2xl mx-auto">
-              <div className="flex items-center space-x-3">
-                <Plus className="h-5 w-5 text-secondary" />
-                <span>Subir fotos de eventos y actividades</span>
-              </div>
-              <div className="flex items-center space-x-3">
-                <Camera className="h-5 w-5 text-secondary" />
-                <span>Organizar imágenes por categorías</span>
-              </div>
-              <div className="flex items-center space-x-3">
-                <Database className="h-5 w-5 text-secondary" />
-                <span>Gestión administrativa de contenido</span>
-              </div>
-            </div>
-          </div> */}
-
           {/* Gallery Grid */}
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6 mb-12">
             {loading ? (
@@ -111,15 +83,25 @@ const Galeria = () => {
               images.map((image) => (
                 <div
                   key={image.id}
-                  onClick={() => setSelectedImage(image)}
-                  className="bg-card rounded-2xl overflow-hidden shadow-card-custom hover:shadow-elegant transition-all duration-300 cursor-pointer"
+                  onClick={() => {
+                    setSelectedImage(image);
+                    setCurrentImageIndex(0);
+                  }}
+                  className="bg-card rounded-2xl overflow-hidden shadow-card-custom hover:shadow-elegant transition-all duration-300 cursor-pointer group"
                 >
                   <div className="h-48 relative overflow-hidden">
                     <img
-                      src={image.image_url}
+                      src={image.image_urls && image.image_urls.length > 0 ? image.image_urls[0] : ''}
                       alt={image.title}
-                      className="w-full h-full object-cover hover:scale-105 transition-transform duration-300"
+                      className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
                     />
+                    {/* Indicator for multiple images */}
+                    {image.image_urls && image.image_urls.length > 1 && (
+                      <div className="absolute top-3 right-3 bg-black/70 text-white px-2 py-1 rounded-full flex items-center gap-1 text-xs">
+                        <Images className="h-3 w-3" />
+                        <span>{image.image_urls.length}</span>
+                      </div>
+                    )}
                   </div>
 
                   <div className="p-6">
@@ -148,33 +130,18 @@ const Galeria = () => {
               </div>
             )}
           </div>
-
-          {/* Call to Action */}
-          {/* <div className="text-center">
-            <div className="bg-gradient-primary rounded-2xl p-8 text-center shadow-elegant">
-              <h3 className="font-serif text-2xl font-semibold text-primary-foreground mb-4">
-                ¿Listo para activar la galería?
-              </h3>
-              <p className="text-primary-foreground/90 mb-6 max-w-2xl mx-auto">
-                Conecta tu proyecto con Supabase para habilitar la funcionalidad completa 
-                de gestión de imágenes y contenido dinámico.
-              </p>
-              <Button 
-                variant="secondary"
-                className="bg-card text-foreground hover:bg-card/90 px-8 py-3 shadow-gold"
-              >
-                <Database className="h-5 w-5 mr-2" />
-                Configurar Backend
-              </Button>
-            </div>
-          </div> */}
         </div>
       </div>
 
-      {/* Image Detail Dialog */}
+      {/* Image Detail Dialog with Carousel */}
       <Dialog
         open={!!selectedImage}
-        onOpenChange={(open) => !open && setSelectedImage(null)}
+        onOpenChange={(open) => {
+          if (!open) {
+            setSelectedImage(null);
+            setCurrentImageIndex(0);
+          }
+        }}
       >
         <DialogContent className="max-w-4xl">
           <DialogHeader>
@@ -183,13 +150,78 @@ const Galeria = () => {
             </DialogTitle>
           </DialogHeader>
           <div className="space-y-4">
-            <div className="relative w-full aspect-video rounded-lg overflow-hidden">
-              <img
-                src={selectedImage?.image_url}
-                alt={selectedImage?.title}
-                className="w-full h-full object-contain"
-              />
-            </div>
+            {selectedImage && selectedImage.image_urls && selectedImage.image_urls.length > 0 && (
+              <>
+                {selectedImage.image_urls.length === 1 ? (
+                  // Single image
+                  <div className="relative w-full aspect-video rounded-lg overflow-hidden">
+                    <img
+                      src={selectedImage.image_urls[0]}
+                      alt={selectedImage.title}
+                      className="w-full h-full object-contain"
+                    />
+                  </div>
+                ) : (
+                  // Carousel for multiple images
+                  <div className="space-y-3">
+                    <div className="relative w-full aspect-video rounded-lg overflow-hidden group bg-muted">
+                      <img
+                        src={selectedImage.image_urls[currentImageIndex]}
+                        alt={`${selectedImage.title} - ${currentImageIndex + 1}`}
+                        className="w-full h-full object-contain"
+                      />
+
+                      {/* Navigation Buttons */}
+                      <button
+                        onClick={() => setCurrentImageIndex((prev) =>
+                          prev === 0 ? selectedImage.image_urls.length - 1 : prev - 1
+                        )}
+                        className="absolute left-4 top-1/2 -translate-y-1/2 bg-black/50 hover:bg-black/70 text-white p-3 rounded-full transition-all opacity-0 group-hover:opacity-100"
+                        aria-label="Imagen anterior"
+                      >
+                        <ChevronLeft className="h-6 w-6" />
+                      </button>
+
+                      <button
+                        onClick={() => setCurrentImageIndex((prev) =>
+                          prev === selectedImage.image_urls.length - 1 ? 0 : prev + 1
+                        )}
+                        className="absolute right-4 top-1/2 -translate-y-1/2 bg-black/50 hover:bg-black/70 text-white p-3 rounded-full transition-all opacity-0 group-hover:opacity-100"
+                        aria-label="Siguiente imagen"
+                      >
+                        <ChevronRight className="h-6 w-6" />
+                      </button>
+
+                      {/* Image Counter */}
+                      <div className="absolute bottom-4 right-4 bg-black/70 text-white px-3 py-1 rounded-full text-sm">
+                        {currentImageIndex + 1} / {selectedImage.image_urls.length}
+                      </div>
+                    </div>
+
+                    {/* Thumbnail Navigation */}
+                    <div className="flex gap-2 justify-center overflow-x-auto pb-2">
+                      {selectedImage.image_urls.map((imageUrl, index) => (
+                        <button
+                          key={index}
+                          onClick={() => setCurrentImageIndex(index)}
+                          className={`flex-shrink-0 rounded-lg overflow-hidden transition-all ${
+                            currentImageIndex === index
+                              ? 'ring-4 ring-primary shadow-lg scale-105'
+                              : 'opacity-60 hover:opacity-100'
+                          }`}
+                        >
+                          <img
+                            src={imageUrl}
+                            alt={`Miniatura ${index + 1}`}
+                            className="w-16 h-16 object-cover"
+                          />
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+                )}
+              </>
+            )}
             {selectedImage?.description && (
               <p className="text-foreground text-lg">
                 {selectedImage.description}

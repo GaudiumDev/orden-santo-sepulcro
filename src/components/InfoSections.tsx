@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { supabase } from '@/integrations/supabase/client';
-import { ArrowRight, FileText } from 'lucide-react';
+import { ArrowRight, FileText, Images } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 
 interface InfoSection {
@@ -128,11 +128,20 @@ const InfoSections = () => {
                 {/* Image */}
                 <div className="h-48 relative overflow-hidden">
                   {section.image_urls && section.image_urls.length > 0 && section.image_urls[0] ? (
-                    <img
-                      src={section.image_urls[0]}
-                      alt={section.title}
-                      className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
-                    />
+                    <>
+                      <img
+                        src={section.image_urls[0]}
+                        alt={section.title}
+                        className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                      />
+                      {/* Indicator for multiple images */}
+                      {section.image_urls.length > 1 && (
+                        <div className="absolute top-3 right-3 bg-black/70 text-white px-2 py-1 rounded-full flex items-center gap-1 text-xs">
+                          <Images className="h-3 w-3" />
+                          <span>{section.image_urls.length}</span>
+                        </div>
+                      )}
+                    </>
                   ) : (
                     <div className="w-full h-full bg-gradient-to-br from-primary/10 to-secondary/10 flex items-center justify-center">
                       <FileText className="h-12 w-12 text-primary/50" />

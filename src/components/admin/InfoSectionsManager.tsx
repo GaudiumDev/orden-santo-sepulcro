@@ -34,9 +34,9 @@ const InfoSectionsManager = () => {
     description: '',
     content: '',
     category: 'gran_magisterio',
-    image_urls: ['', '', '', '', ''],
     is_active: true
   });
+  const [selectedFiles, setSelectedFiles] = useState<File[]>([]);
   const { toast } = useToast();
 
   const categories = [
@@ -75,16 +75,45 @@ const InfoSectionsManager = () => {
     }
   };
 
+  const uploadImage = async (file: File): Promise<string> => {
+    const fileExt = file.name.split('.').pop();
+    const fileName = `${Date.now()}-${Math.random().toString(36).substring(7)}.${fileExt}`;
+    const filePath = `info-sections/${fileName}`;
+
+    const { error: uploadError } = await supabase.storage
+      .from('gallery')
+      .upload(filePath, file);
+
+    if (uploadError) throw uploadError;
+
+    const { data } = supabase.storage
+      .from('gallery')
+      .getPublicUrl(filePath);
+
+    return data.publicUrl;
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setSaving(true);
 
     try {
+      let imageUrls = editingSection?.image_urls || [];
+
+      // Upload new files if any
+      if (selectedFiles.length > 0) {
+        const uploadPromises = selectedFiles.map(file => uploadImage(file));
+        const newUrls = await Promise.all(uploadPromises);
+        imageUrls = [...imageUrls, ...newUrls];
+
+        // Ensure we don't exceed 5 images
+        if (imageUrls.length > 5) {
+          imageUrls = imageUrls.slice(0, 5);
+        }
+      }
+
       if (editingSection) {
         // Update existing section
-        // Filter out empty strings from image_urls
-        const filteredImageUrls = formData.image_urls.filter(url => url.trim() !== '');
-
         const { error } = await supabase
           .from('info_sections')
           .update({
@@ -92,7 +121,7 @@ const InfoSectionsManager = () => {
             description: formData.description || null,
             content: formData.content || null,
             category: formData.category,
-            image_urls: filteredImageUrls,
+            image_urls: imageUrls,
             is_active: formData.is_active
           })
           .eq('id', editingSection.id);
@@ -105,9 +134,6 @@ const InfoSectionsManager = () => {
         });
       } else {
         // Create new section
-        // Filter out empty strings from image_urls
-        const filteredImageUrls = formData.image_urls.filter(url => url.trim() !== '');
-
         const { error } = await supabase
           .from('info_sections')
           .insert({
@@ -115,7 +141,7 @@ const InfoSectionsManager = () => {
             description: formData.description || null,
             content: formData.content || null,
             category: formData.category,
-            image_urls: filteredImageUrls,
+            image_urls: imageUrls,
             is_active: formData.is_active
           });
 
@@ -199,22 +225,19 @@ const InfoSectionsManager = () => {
       description: '',
       content: '',
       category: 'gran_magisterio',
-      image_urls: ['', '', '', '', ''],
       is_active: true
     });
+    setSelectedFiles([]);
     setEditingSection(null);
   };
 
   const openEditDialog = (section: InfoSection) => {
     setEditingSection(section);
-    // Ensure we always have exactly 5 slots for images
-    const imageUrlsArray = [...(section.image_urls || []), '', '', '', '', ''].slice(0, 5);
     setFormData({
       title: section.title,
       description: section.description || '',
       content: section.content || '',
       category: section.category,
-      image_urls: imageUrlsArray,
       is_active: section.is_active
     });
     setShowDialog(true);
@@ -305,26 +328,77 @@ const InfoSectionsManager = () => {
                 />
               </div>
 
-              <div className="space-y-3">
-                <Label className="text-base font-semibold">URLs de Imágenes (hasta 5)</Label>
-                <p className="text-sm text-muted-foreground">Puedes agregar hasta 5 imágenes para este evento</p>
-                {formData.image_urls.map((url, index) => (
-                  <div key={index} className="space-y-2">
-                    <Label htmlFor={`image_url_${index}`}>
-                      Imagen {index + 1} {index === 0 ? '(Principal)' : '(opcional)'}
-                    </Label>
-                    <Input
-                      id={`image_url_${index}`}
-                      value={url}
-                      onChange={(e) => {
-                        const newUrls = [...formData.image_urls];
-                        newUrls[index] = e.target.value;
-                        setFormData({ ...formData, image_urls: newUrls });
-                      }}
-                      placeholder="https://ejemplo.com/imagen.jpg"
-                    />
+              <div className="space-y-2">
+                <Label htmlFor="images">
+                  {editingSection ? 'Agregar Más Imágenes (opcional)' : 'Imágenes (máximo 5)'}
+                </Label>
+                <Input
+                  id="images"
+                  type="file"
+                  accept="image/*"
+                  multiple
+                  onChange={(e) => {
+                    const files = Array.from(e.target.files || []);
+                    const currentCount = editingSection?.image_urls.length || 0;
+                    const maxNewFiles = 5 - currentCount;
+
+                    if (files.length > maxNewFiles) {
+                      toast({
+                        title: "Límite alcanzado",
+                        description: `Solo puedes agregar ${maxNewFiles} imagen(es) más`,
+                        variant: "destructive",
+                      });
+                      setSelectedFiles(files.slice(0, maxNewFiles));
+                    } else {
+                      setSelectedFiles(files);
+                    }
+                  }}
+                />
+                <p className="text-xs text-muted-foreground">
+                  {editingSection
+                    ? `Tienes ${editingSection.image_urls.length} imagen(es). Puedes agregar hasta ${5 - editingSection.image_urls.length} más.`
+                    : 'Selecciona hasta 5 imágenes para esta sección. Se mostrarán en un carrusel.'
+                  }
+                </p>
+
+                {/* File previews */}
+                {selectedFiles.length > 0 && (
+                  <div className="grid grid-cols-3 gap-2 mt-3">
+                    {selectedFiles.map((file, index) => (
+                      <div key={index} className="relative aspect-square rounded-lg overflow-hidden border border-border">
+                        <img
+                          src={URL.createObjectURL(file)}
+                          alt={`Preview ${index + 1}`}
+                          className="w-full h-full object-cover"
+                        />
+                        <div className="absolute top-1 right-1 bg-black/70 text-white text-xs px-1 rounded">
+                          {index + 1}
+                        </div>
+                      </div>
+                    ))}
                   </div>
-                ))}
+                )}
+
+                {/* Existing images preview when editing */}
+                {editingSection && editingSection.image_urls.length > 0 && (
+                  <div className="mt-3">
+                    <Label className="text-sm">Imágenes actuales:</Label>
+                    <div className="grid grid-cols-3 gap-2 mt-2">
+                      {editingSection.image_urls.map((url, index) => (
+                        <div key={index} className="relative aspect-square rounded-lg overflow-hidden border border-primary">
+                          <img
+                            src={url}
+                            alt={`Actual ${index + 1}`}
+                            className="w-full h-full object-cover"
+                          />
+                          <div className="absolute top-1 left-1 bg-primary text-primary-foreground text-xs px-1 rounded">
+                            {index + 1}
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
               </div>
 
               <div className="flex items-center space-x-2">

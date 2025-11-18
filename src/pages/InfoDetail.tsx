@@ -2,7 +2,7 @@ import { useState, useEffect } from "react"
 import { useParams, useNavigate } from "react-router-dom"
 import { Button } from "@/components/ui/button"
 import { supabase } from "@/integrations/supabase/client"
-import { ArrowLeft, FileText } from "lucide-react"
+import { ArrowLeft, FileText, ChevronLeft, ChevronRight } from "lucide-react"
 import Header from "@/components/Header"
 import Footer from "@/components/Footer"
 
@@ -23,6 +23,7 @@ const InfoDetail = () => {
   const [section, setSection] = useState<InfoSection | null>(null)
   const [loading, setLoading] = useState(true)
   const [notFound, setNotFound] = useState(false)
+  const [currentImageIndex, setCurrentImageIndex] = useState(0)
 
   useEffect(() => {
     if (id) {
@@ -131,7 +132,7 @@ const InfoDetail = () => {
             )}
           </div>
 
-          {/* Image Gallery */}
+          {/* Image Carousel */}
           {section.image_urls && section.image_urls.length > 0 && (
             <div className="mb-12">
               {section.image_urls.length === 1 ? (
@@ -140,32 +141,83 @@ const InfoDetail = () => {
                   <img
                     src={section.image_urls[0]}
                     alt={section.title}
-                    className="w-full h-auto max-h-96 object-cover"
+                    className="w-full h-auto max-h-[500px] object-cover"
                   />
                 </div>
               ) : (
-                // Multiple images grid
+                // Carousel for multiple images
                 <div className="space-y-4">
-                  <div className="rounded-2xl overflow-hidden shadow-elegant">
+                  {/* Main Image with Navigation */}
+                  <div className="relative rounded-2xl overflow-hidden shadow-elegant group">
                     <img
-                      src={section.image_urls[0]}
-                      alt={`${section.title} - Principal`}
-                      className="w-full h-auto max-h-96 object-cover"
+                      src={section.image_urls[currentImageIndex]}
+                      alt={`${section.title} - ${currentImageIndex + 1}`}
+                      className="w-full h-auto max-h-[500px] object-cover transition-opacity duration-300"
                     />
-                  </div>
-                  {section.image_urls.length > 1 && (
-                    <div className={`grid ${section.image_urls.length === 2 ? 'grid-cols-1' : section.image_urls.length === 3 ? 'grid-cols-2' : 'grid-cols-2 md:grid-cols-4'} gap-4`}>
-                      {section.image_urls.slice(1).map((imageUrl, index) => (
-                        <div key={index} className="rounded-lg overflow-hidden shadow-card-custom hover:shadow-elegant transition-all duration-300">
-                          <img
-                            src={imageUrl}
-                            alt={`${section.title} - ${index + 2}`}
-                            className="w-full h-48 object-cover hover:scale-105 transition-transform duration-300"
-                          />
-                        </div>
-                      ))}
+
+                    {/* Navigation Buttons */}
+                    <button
+                      onClick={() => setCurrentImageIndex((prev) =>
+                        prev === 0 ? section.image_urls.length - 1 : prev - 1
+                      )}
+                      className="absolute left-4 top-1/2 -translate-y-1/2 bg-black/50 hover:bg-black/70 text-white p-3 rounded-full transition-all opacity-0 group-hover:opacity-100"
+                      aria-label="Imagen anterior"
+                    >
+                      <ChevronLeft className="h-6 w-6" />
+                    </button>
+
+                    <button
+                      onClick={() => setCurrentImageIndex((prev) =>
+                        prev === section.image_urls.length - 1 ? 0 : prev + 1
+                      )}
+                      className="absolute right-4 top-1/2 -translate-y-1/2 bg-black/50 hover:bg-black/70 text-white p-3 rounded-full transition-all opacity-0 group-hover:opacity-100"
+                      aria-label="Siguiente imagen"
+                    >
+                      <ChevronRight className="h-6 w-6" />
+                    </button>
+
+                    {/* Image Counter */}
+                    <div className="absolute bottom-4 right-4 bg-black/70 text-white px-3 py-1 rounded-full text-sm">
+                      {currentImageIndex + 1} / {section.image_urls.length}
                     </div>
-                  )}
+                  </div>
+
+                  {/* Thumbnail Navigation */}
+                  <div className="flex gap-3 overflow-x-auto pb-2">
+                    {section.image_urls.map((imageUrl, index) => (
+                      <button
+                        key={index}
+                        onClick={() => setCurrentImageIndex(index)}
+                        className={`flex-shrink-0 rounded-lg overflow-hidden transition-all ${
+                          currentImageIndex === index
+                            ? 'ring-4 ring-primary shadow-lg scale-105'
+                            : 'opacity-60 hover:opacity-100'
+                        }`}
+                      >
+                        <img
+                          src={imageUrl}
+                          alt={`Miniatura ${index + 1}`}
+                          className="w-20 h-20 object-cover"
+                        />
+                      </button>
+                    ))}
+                  </div>
+
+                  {/* Dots Indicator (alternative to thumbnails) */}
+                  <div className="flex justify-center gap-2">
+                    {section.image_urls.map((_, index) => (
+                      <button
+                        key={index}
+                        onClick={() => setCurrentImageIndex(index)}
+                        className={`h-2 rounded-full transition-all ${
+                          currentImageIndex === index
+                            ? 'w-8 bg-primary'
+                            : 'w-2 bg-muted-foreground/30 hover:bg-muted-foreground/50'
+                        }`}
+                        aria-label={`Ir a imagen ${index + 1}`}
+                      />
+                    ))}
+                  </div>
                 </div>
               )}
             </div>
