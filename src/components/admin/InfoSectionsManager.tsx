@@ -10,7 +10,7 @@ import { Switch } from '@/components/ui/switch';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
-import { Plus, Edit, Trash2, FileText, Eye, EyeOff } from 'lucide-react';
+import { Plus, Edit, Trash2, FileText, Eye, EyeOff, X } from 'lucide-react';
 
 interface InfoSection {
   id: string;
@@ -243,6 +243,20 @@ const InfoSectionsManager = () => {
     setShowDialog(true);
   };
 
+  const removeExistingImage = (indexToRemove: number) => {
+    if (!editingSection) return;
+
+    const updatedImages = editingSection.image_urls.filter((_, index) => index !== indexToRemove);
+    setEditingSection({
+      ...editingSection,
+      image_urls: updatedImages
+    });
+  };
+
+  const removeSelectedFile = (indexToRemove: number) => {
+    setSelectedFiles(prev => prev.filter((_, index) => index !== indexToRemove));
+  };
+
   if (loading) {
     return (
       <div className="flex items-center justify-center py-12">
@@ -365,7 +379,7 @@ const InfoSectionsManager = () => {
                 {selectedFiles.length > 0 && (
                   <div className="grid grid-cols-3 gap-2 mt-3">
                     {selectedFiles.map((file, index) => (
-                      <div key={index} className="relative aspect-square rounded-lg overflow-hidden border border-border">
+                      <div key={index} className="relative aspect-square rounded-lg overflow-hidden border border-border group">
                         <img
                           src={URL.createObjectURL(file)}
                           alt={`Preview ${index + 1}`}
@@ -374,6 +388,14 @@ const InfoSectionsManager = () => {
                         <div className="absolute top-1 right-1 bg-black/70 text-white text-xs px-1 rounded">
                           {index + 1}
                         </div>
+                        <button
+                          type="button"
+                          onClick={() => removeSelectedFile(index)}
+                          className="absolute top-1 left-1 bg-destructive text-destructive-foreground p-1 rounded-full opacity-0 group-hover:opacity-100 transition-opacity"
+                          title="Eliminar imagen"
+                        >
+                          <X className="h-3 w-3" />
+                        </button>
                       </div>
                     ))}
                   </div>
@@ -385,7 +407,7 @@ const InfoSectionsManager = () => {
                     <Label className="text-sm">Imágenes actuales:</Label>
                     <div className="grid grid-cols-3 gap-2 mt-2">
                       {editingSection.image_urls.map((url, index) => (
-                        <div key={index} className="relative aspect-square rounded-lg overflow-hidden border border-primary">
+                        <div key={index} className="relative aspect-square rounded-lg overflow-hidden border border-primary group">
                           <img
                             src={url}
                             alt={`Actual ${index + 1}`}
@@ -394,6 +416,14 @@ const InfoSectionsManager = () => {
                           <div className="absolute top-1 left-1 bg-primary text-primary-foreground text-xs px-1 rounded">
                             {index + 1}
                           </div>
+                          <button
+                            type="button"
+                            onClick={() => removeExistingImage(index)}
+                            className="absolute top-1 right-1 bg-destructive text-destructive-foreground p-1 rounded-full opacity-0 group-hover:opacity-100 transition-opacity"
+                            title="Eliminar imagen"
+                          >
+                            <X className="h-3 w-3" />
+                          </button>
                         </div>
                       ))}
                     </div>

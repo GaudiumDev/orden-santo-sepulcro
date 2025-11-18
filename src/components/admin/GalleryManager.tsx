@@ -9,7 +9,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from 
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
-import { Plus, Upload, Edit, Trash2, Image, Images } from 'lucide-react';
+import { Plus, Upload, Edit, Trash2, Image, Images, X } from 'lucide-react';
 
 interface GalleryImage {
   id: string;
@@ -203,6 +203,20 @@ const GalleryManager = () => {
     setShowDialog(true);
   };
 
+  const removeExistingImage = (indexToRemove: number) => {
+    if (!editingImage) return;
+
+    const updatedImages = editingImage.image_urls.filter((_, index) => index !== indexToRemove);
+    setEditingImage({
+      ...editingImage,
+      image_urls: updatedImages
+    });
+  };
+
+  const removeSelectedFile = (indexToRemove: number) => {
+    setSelectedFiles(prev => prev.filter((_, index) => index !== indexToRemove));
+  };
+
   if (loading) {
     return (
       <div className="flex items-center justify-center py-12">
@@ -313,7 +327,7 @@ const GalleryManager = () => {
                 {selectedFiles.length > 0 && (
                   <div className="grid grid-cols-3 gap-2 mt-3">
                     {selectedFiles.map((file, index) => (
-                      <div key={index} className="relative aspect-square rounded-lg overflow-hidden border border-border">
+                      <div key={index} className="relative aspect-square rounded-lg overflow-hidden border border-border group">
                         <img
                           src={URL.createObjectURL(file)}
                           alt={`Preview ${index + 1}`}
@@ -322,6 +336,14 @@ const GalleryManager = () => {
                         <div className="absolute top-1 right-1 bg-black/70 text-white text-xs px-1 rounded">
                           {index + 1}
                         </div>
+                        <button
+                          type="button"
+                          onClick={() => removeSelectedFile(index)}
+                          className="absolute top-1 left-1 bg-destructive text-destructive-foreground p-1 rounded-full opacity-0 group-hover:opacity-100 transition-opacity"
+                          title="Eliminar imagen"
+                        >
+                          <X className="h-3 w-3" />
+                        </button>
                       </div>
                     ))}
                   </div>
@@ -333,7 +355,7 @@ const GalleryManager = () => {
                     <Label className="text-sm">Imágenes actuales:</Label>
                     <div className="grid grid-cols-3 gap-2 mt-2">
                       {editingImage.image_urls.map((url, index) => (
-                        <div key={index} className="relative aspect-square rounded-lg overflow-hidden border border-primary">
+                        <div key={index} className="relative aspect-square rounded-lg overflow-hidden border border-primary group">
                           <img
                             src={url}
                             alt={`Actual ${index + 1}`}
@@ -342,6 +364,14 @@ const GalleryManager = () => {
                           <div className="absolute top-1 left-1 bg-primary text-primary-foreground text-xs px-1 rounded">
                             {index + 1}
                           </div>
+                          <button
+                            type="button"
+                            onClick={() => removeExistingImage(index)}
+                            className="absolute top-1 right-1 bg-destructive text-destructive-foreground p-1 rounded-full opacity-0 group-hover:opacity-100 transition-opacity"
+                            title="Eliminar imagen"
+                          >
+                            <X className="h-3 w-3" />
+                          </button>
                         </div>
                       ))}
                     </div>
