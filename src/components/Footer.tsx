@@ -1,25 +1,25 @@
 const Footer = () => {
-  const currentYear = new Date().getFullYear();
+  const currentYear = new Date().getFullYear()
 
   const quickLinks = [
-    { label: 'Inicio', href: '#inicio' },
-    { label: 'La Orden', href: '#la-orden' },
-    { label: 'Historia', href: '#historia' },
-    { label: 'Autoridades', href: '#autoridades' },
-    { label: 'Galería', href: '#galeria' },
-    { label: 'Contacto', href: '#contacto' },
-  ];
+    { label: "Inicio", href: "#inicio" },
+    { label: "La Orden", href: "#la-orden" },
+    { label: "Historia", href: "#historia" },
+    { label: "Autoridades", href: "#autoridades" },
+    { label: "Galería", href: "#galeria" },
+    { label: "Contacto", href: "#contacto" },
+  ]
 
   const scrollToSection = (href: string) => {
-    const element = document.querySelector(href);
+    const element = document.querySelector(href)
     if (element) {
-      element.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      element.scrollIntoView({ behavior: "smooth", block: "start" })
     }
-  };
+  }
 
   const scrollToTop = () => {
-    window.scrollTo({ top: 0, behavior: 'smooth' });
-  };
+    window.scrollTo({ top: 0, behavior: "smooth" })
+  }
 
   return (
     <footer className="bg-primary text-primary-foreground py-16">
@@ -41,11 +41,11 @@ const Footer = () => {
                   </p>
                 </div>
               </div>
-              
+
               <p className="text-primary-foreground/90 text-sm leading-relaxed mb-6">
-                Una institución pontificia milenaria al servicio de la Iglesia Católica 
-                y la Tierra Santa, promoviendo la fe cristiana y apoyando a las comunidades 
-                cristianas de Jerusalén.
+                Una institución pontificia milenaria al servicio de la Iglesia
+                Católica y la Tierra Santa, promoviendo la fe cristiana y
+                apoyando a las comunidades cristianas de Jerusalén.
               </p>
 
               <div className="text-primary-foreground/70 text-xs">
@@ -79,11 +79,11 @@ const Footer = () => {
               </h4>
               <div className="space-y-4 text-sm text-primary-foreground/90">
                 <p>
-                  Sostener y ayudar a las obras caritativas, culturales y sociales 
-                  de la Iglesia Católica en Tierra Santa.
+                  Sostener y ayudar a las obras caritativas, culturales y
+                  sociales de la Iglesia Católica en Tierra Santa.
                 </p>
                 <p>
-                  Preservar la presencia cristiana en los lugares santos de 
+                  Preservar la presencia cristiana en los lugares santos de
                   Jerusalén y apoyar a las comunidades locales.
                 </p>
               </div>
@@ -92,7 +92,7 @@ const Footer = () => {
                 <p className="text-xs text-primary-foreground/70 mb-2">
                   Contacto:
                 </p>
-                <a 
+                <a
                   href="mailto:contacto@ordensantosepulcro.org.ar"
                   className="text-secondary hover:text-secondary-light transition-colors text-sm"
                 >
@@ -107,8 +107,8 @@ const Footer = () => {
             <div className="flex flex-col md:flex-row justify-between items-center">
               {/* Copyright */}
               <div className="text-xs text-primary-foreground/70 mb-4 md:mb-0">
-                © {currentYear} Orden Ecuestre del Santo Sepulcro de Jerusalén - Lugartenencia Argentina. 
-                Todos los derechos reservados.
+                © {currentYear} Orden del Santo Sepulcro de Jerusalén -
+                Lugartenencia Argentina. Todos los derechos reservados.
               </div>
 
               {/* Back to Top */}
@@ -119,6 +119,21 @@ const Footer = () => {
                 <span>Volver al inicio</span>
                 <span className="text-secondary">↑</span>
               </button>
+            </div>
+
+            {/* Developer Credit */}
+            <div className="text-center mt-6">
+              <p className="text-xs text-primary-foreground/60">
+                Desarrollado por{" "}
+                <a
+                  href="https://apostol.digital/"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-secondary hover:text-secondary-light transition-colors underline"
+                >
+                  Apostol Digital
+                </a>
+              </p>
             </div>
           </div>
 
@@ -131,7 +146,7 @@ const Footer = () => {
         </div>
       </div>
     </footer>
-  );
-};
+  )
+}
 
-export default Footer;
+export default Footer
