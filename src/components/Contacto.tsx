@@ -1,4 +1,4 @@
-import { Mail, MapPin, Phone } from 'lucide-react';
+import { Mail, MapPin, Phone } from "lucide-react"
 
 const Contacto = () => {
   return (
@@ -24,15 +24,17 @@ const Contacto = () => {
                 <h3 className="font-serif text-2xl font-semibold text-primary mb-6">
                   Información de Contacto
                 </h3>
-                
+
                 {/* Email */}
                 <div className="flex items-center space-x-4 mb-6 p-4 bg-card rounded-lg shadow-card-custom hover:shadow-elegant transition-all duration-300">
                   <div className="w-12 h-12 bg-gradient-primary rounded-full flex items-center justify-center">
                     <Mail className="h-6 w-6 text-primary-foreground" />
                   </div>
                   <div>
-                    <p className="text-sm text-muted-foreground">Correo Electrónico</p>
-                    <a 
+                    <p className="text-sm text-muted-foreground">
+                      Correo Electrónico
+                    </p>
+                    <a
                       href="mailto:contacto@ordensantosepulcro.org.ar"
                       className="text-primary font-medium hover:text-primary-light transition-colors"
                     >
@@ -62,7 +64,7 @@ const Contacto = () => {
                   <div>
                     <p className="text-sm text-muted-foreground">Teléfono</p>
                     <p className="text-foreground font-medium">
-                      [Número de contacto]
+                      +54 9 11 3032-2727
                     </p>
                   </div>
                 </div>
@@ -74,19 +76,19 @@ const Contacto = () => {
               <h3 className="font-serif text-2xl font-semibold text-primary mb-6">
                 Sobre las Consultas
               </h3>
-              
+
               <div className="space-y-4 text-foreground">
                 <p className="leading-relaxed">
-                  Para consultas sobre membresía, actividades de la Orden o 
-                  información sobre nuestras obras en Tierra Santa, no dude 
-                  en contactarnos.
+                  Para consultas sobre membresía, actividades de la Orden o
+                  información sobre nuestras obras en Tierra Santa, no dude en
+                  contactarnos.
                 </p>
-                
+
                 <p className="leading-relaxed">
-                  La Lugartenencia Argentina está disponible para atender 
+                  La Lugartenencia Argentina está disponible para atender
                   inquietudes relacionadas con:
                 </p>
-                
+
                 <ul className="space-y-2 text-sm">
                   <li className="flex items-center space-x-2">
                     <div className="w-2 h-2 bg-secondary rounded-full"></div>
@@ -109,7 +111,7 @@ const Contacto = () => {
 
               <div className="mt-8 p-4 bg-muted rounded-lg">
                 <p className="text-muted-foreground text-sm italic text-center">
-                  "Nos comprometemos a responder todas las consultas con la 
+                  "Nos comprometemos a responder todas las consultas con la
                   dignidad y respeto que caracterizan a nuestra institución."
                 </p>
               </div>
@@ -118,7 +120,7 @@ const Contacto = () => {
         </div>
       </div>
     </section>
-  );
-};
+  )
+}
 
-export default Contacto;
+export default Contacto
