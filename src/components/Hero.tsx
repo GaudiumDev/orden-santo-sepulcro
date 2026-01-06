@@ -39,7 +39,7 @@ const Hero = () => {
           </h1>
           <div className="w-24 h-1 bg-gradient-gold mx-auto mb-6"></div>
           <p className="text-xl md:text-2xl  font-light italic">
-            Lugartenencia Argentina - 1888 | Creación Lugartenencia ARG
+            Lugartenencia Argentina - 1888
           </p>
         </div>
 

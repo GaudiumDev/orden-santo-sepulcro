@@ -13,6 +13,12 @@ const Historia = () => {
         "El Papa Pío IX reconstituye la Orden como institución pontificia moderna.",
     },
     {
+      year: "1888",
+      title: "Creación Lugartenencia ARG",
+      description:
+        "Se establece la Lugartenencia Argentina de la Orden en la República Argentina.",
+    },
+    {
       year: "1949",
       title: "Estatutos Modernos",
       description:
