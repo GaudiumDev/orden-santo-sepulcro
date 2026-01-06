@@ -21,13 +21,15 @@ const LaOrden = () => {
                 ¿Qué es la Orden?
               </h3>
               <p className="text-lg leading-relaxed text-foreground">
-                La Orden Ecuestre del Santo Sepulcro de Jerusalén es una institución católica 
-                pontificia que tiene como misión sostener y ayudar a las obras caritativas, 
-                culturales y sociales de la Iglesia Católica en Tierra Santa.
+                La Orden Ecuestre del Santo Sepulcro de Jerusalén es una
+                institución católica pontificia que tiene como misión sostener y
+                ayudar a las obras caritativas, culturales y sociales de la
+                Iglesia Católica en Tierra Santa.
               </p>
               <p className="text-lg leading-relaxed text-foreground">
-                Fundada en el siglo XI durante las Cruzadas, mantiene viva la presencia 
-                cristiana en los lugares santos y apoya a las comunidades cristianas locales.
+                Fundada en el siglo XI durante las Cruzadas, mantiene viva la
+                presencia cristiana en los lugares santos y apoya a las
+                comunidades cristianas locales.
               </p>
             </div>
 
@@ -40,7 +42,15 @@ const LaOrden = () => {
                 <div className="flex items-start space-x-3">
                   <div className="w-2 h-2 bg-secondary rounded-full mt-3"></div>
                   <p className="text-foreground">
-                    Preservar y fortalecer la presencia cristiana en Tierra Santa
+                    Defensa de la fe y protección de los necesitados en Tierra
+                    Santa
+                  </p>
+                </div>
+                <div className="flex items-start space-x-3">
+                  <div className="w-2 h-2 bg-secondary rounded-full mt-3"></div>
+                  <p className="text-foreground">
+                    Preservar y fortalecer la presencia cristiana en Tierra
+                    Santa
                   </p>
                 </div>
                 <div className="flex items-start space-x-3">
@@ -58,7 +68,8 @@ const LaOrden = () => {
                 <div className="flex items-start space-x-3">
                   <div className="w-2 h-2 bg-secondary rounded-full mt-3"></div>
                   <p className="text-foreground">
-                    Sostener económicamente las actividades pastorales y educativas
+                    Sostener económicamente las actividades pastorales y
+                    educativas
                   </p>
                 </div>
               </div>
@@ -71,16 +82,21 @@ const LaOrden = () => {
               <div className="w-16 h-16 bg-gradient-primary rounded-full flex items-center justify-center mx-auto mb-4">
                 <span className="text-primary-foreground text-2xl">⛪</span>
               </div>
-              <h4 className="font-serif text-xl font-semibold text-primary mb-3">Fe</h4>
+              <h4 className="font-serif text-xl font-semibold text-primary mb-3">
+                Fe
+              </h4>
               <p className="text-muted-foreground">
-                Comprometidos con la tradición católica y los valores evangélicos
+                Comprometidos con la tradición católica y los valores
+                evangélicos
               </p>
             </div>
             <div className="text-center">
               <div className="w-16 h-16 bg-gradient-gold rounded-full flex items-center justify-center mx-auto mb-4">
                 <span className="text-foreground text-2xl">🤝</span>
               </div>
-              <h4 className="font-serif text-xl font-semibold text-primary mb-3">Caridad</h4>
+              <h4 className="font-serif text-xl font-semibold text-primary mb-3">
+                Caridad
+              </h4>
               <p className="text-muted-foreground">
                 Dedicados al servicio de los más necesitados en Tierra Santa
               </p>
@@ -89,7 +105,9 @@ const LaOrden = () => {
               <div className="w-16 h-16 bg-gradient-primary rounded-full flex items-center justify-center mx-auto mb-4">
                 <span className="text-primary-foreground text-2xl">⚔️</span>
               </div>
-              <h4 className="font-serif text-xl font-semibold text-primary mb-3">Honor</h4>
+              <h4 className="font-serif text-xl font-semibold text-primary mb-3">
+                Honor
+              </h4>
               <p className="text-muted-foreground">
                 Manteniendo los ideales caballerescos de justicia y dignidad
               </p>
@@ -98,7 +116,7 @@ const LaOrden = () => {
         </div>
       </div>
     </section>
-  );
-};
+  )
+}
 
-export default LaOrden;
+export default LaOrden

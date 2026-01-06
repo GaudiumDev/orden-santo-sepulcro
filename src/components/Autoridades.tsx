@@ -23,7 +23,7 @@ const Autoridades = () => {
   const viceGobernadores = [
     {
       title: "Enric Mas",
-      role: "Vice Gobernador General para Latinoamérica",
+      role: "Vice Gobernador General para España, Portugal y Latinoamérica",
     },
     {
       title: "Thomas Pogge",
@@ -41,22 +41,22 @@ const Autoridades = () => {
 
   const autoridadesArgentina = [
     {
-      name: "Gran Prior",
-      title: "Monseñor Alejandro Giorgi",
-      role: "Gran Prior de la Orden",
-      description: "Decano de los Obispos de Buenos Aires",
-    },
-    {
       name: "Lugarteniente",
       title: "Gustavo Arigós",
       role: "Lugarteniente",
       description: "Máxima autoridad de la Lugartenencia Argentina",
     },
     {
-      name: "Canciller",
+      name: "Gran Prior",
+      title: "Monseñor Alejandro Giorgi",
+      role: "Gran Prior de la Orden",
+      description: "Decano de los Obispos de Buenos Aires",
+    },
+    {
+      name: "Encargado de Ingresos y Promociones",
       title: "Jorge Colombres Mármol",
-      role: "Canciller",
-      description: "Responsable de los asuntos administrativos",
+      role: "Encargado de Ingresos y Promociones",
+      description: "Responsable de ingresos y promociones de la Lugartenencia",
     },
     {
       name: "Secretario",
