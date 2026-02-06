@@ -2,7 +2,7 @@ const Autoridades = () => {
   const autoridadesVaticano = [
     {
       name: "Gran Maestre",
-      title: "Cardenal Fernando Feloni",
+      title: "Cardenal Fernando Filoni",
       role: "Gran Maestre de la Orden",
       description: "Máxima autoridad de la Orden",
     },

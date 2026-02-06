@@ -1,4 +1,4 @@
-import { Mail, MapPin, Phone } from "lucide-react"
+import { Mail, MapPin, Phone, Info } from "lucide-react"
 
 const Contacto = () => {
   return (
@@ -17,7 +17,7 @@ const Contacto = () => {
           </div>
 
           {/* Contact Information */}
-          <div className="grid md:grid-cols-2 gap-12 items-center">
+          <div className="grid md:grid-cols-1 gap-12 items-center">
             {/* Left Column - Contact Details */}
             <div className="space-y-8">
               <div>
@@ -59,20 +59,27 @@ const Contacto = () => {
                 {/* Phone */}
                 <div className="flex items-center space-x-4 p-4 bg-card rounded-lg shadow-card-custom">
                   <div className="w-12 h-12 bg-gradient-primary rounded-full flex items-center justify-center">
-                    <Phone className="h-6 w-6 text-primary-foreground" />
+                    <Info className="h-6 w-6 text-primary-foreground" />
                   </div>
                   <div>
-                    <p className="text-sm text-muted-foreground">Teléfono</p>
-                    <p className="text-foreground font-medium">
-                      +54 9 11 3032-2727
-                    </p>
+                    <div>
+                      <p className="text-sm text-muted-foreground">Instagram</p>
+                      <a
+                        href="https://www.instagram.com/ordensantosepulcroar/"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="text-primary font-medium hover:text-primary-light transition-colors"
+                      >
+                        @ordensantosepulcroar
+                      </a>
+                    </div>
                   </div>
                 </div>
               </div>
             </div>
 
             {/* Right Column - Information */}
-            <div className="bg-card rounded-2xl p-8 shadow-elegant">
+            {/* <div className="bg-card rounded-2xl p-8 shadow-elegant">
               <h3 className="font-serif text-2xl font-semibold text-primary mb-6">
                 Sobre las Consultas
               </h3>
@@ -115,7 +122,7 @@ const Contacto = () => {
                   dignidad y respeto que caracterizan a nuestra institución."
                 </p>
               </div>
-            </div>
+            </div> */}
           </div>
         </div>
       </div>
