@@ -29,9 +29,11 @@ const Footer = () => {
             {/* Left Column - Logo and Description */}
             <div className="md:col-span-1">
               <div className="flex items-center space-x-3 mb-6">
-                <div className="w-12 h-12 bg-secondary rounded-full flex items-center justify-center">
-                  <span className="text-foreground text-xl font-bold">✠</span>
-                </div>
+                <img
+                  src="/logo.png"
+                  alt="Orden del Santo Sepulcro"
+                  className="w-12 h-12 object-contain"
+                />
                 <div>
                   <h3 className="font-serif text-lg font-bold">
                     Orden del Santo Sepulcro

@@ -50,9 +50,11 @@ const Header = () => {
         <div className="flex items-center justify-between">
           {/* Logo */}
           <div className="flex items-center space-x-3">
-            <div className="w-10 h-10 bg-gradient-primary rounded-full flex items-center justify-center">
-              <span className="text-primary-foreground font-bold text-lg">✠</span>
-            </div>
+            <img
+              src="/logo.png"
+              alt="Orden del Santo Sepulcro"
+              className="w-10 h-10 object-contain"
+            />
             <div className="hidden md:block">
               <h1 className="font-serif text-xl font-bold text-foreground">
                 Orden del Santo Sepulcro
