@@ -27,9 +27,11 @@ const Hero = () => {
       {/* Content */}
       <div className="relative z-10 text-center max-w-4xl mx-auto px-6">
         <div className="mb-8">
-          <div className="w-20 h-20 bg-gradient-primary rounded-full flex items-center justify-center mx-auto mb-6 shadow-elegant">
-            <span className="text-primary-foreground text-3xl">✠</span>
-          </div>
+          <img
+            src="/logo.png"
+            alt="Orden del Santo Sepulcro"
+            className="w-20 h-20 object-contain mx-auto mb-6"
+          />
           <h1 className="font-serif text-5xl md:text-7xl font-bold text-foreground mb-4 leading-tight">
             Orden De Caballeria del
             <span className="block text-primary">Santo Sepulcro</span>
